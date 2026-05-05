@@ -27,4 +27,21 @@ let mailVerification = async (token,email)=>{
 }
 }
 
-module.exports = {mailVerification}
+let resetPasswordMail = async (token,email)=>{
+    try {
+    const info = await transporter.sendMail({
+        from: 'shawon.cit.bd@gmail.com', // sender address
+        to: email, // list of recipients
+        subject: "Please Reset Your Password", // subject line
+        html: `<body style=margin:0;padding:0;font-family:Arial,sans-serif;background-color:#f5f5f5><table cellpadding=0 cellspacing=0 style="background-color:#f5f5f5;padding:20px 0"width=100%><tr><td align=center><table cellpadding=0 cellspacing=0 style=background-color:#fff;border-radius:8px;overflow:hidden width=600><tr><td align=center style=background-color:#28a745;padding:20px><h1 style=color:#fff;margin:0>Ecobazar</h1><tr><td style=padding:30px;color:#333><h2 style=margin-top:0>Reset Your Password</h2><p>Hello,<p>We received a request to reset your password for your Ecobazar account.<p>Click the button below to set a new password:<p style="text-align:center;margin:30px 0"><a href="http://localhost:5173/resetpassword/${token}" style="background-color:#28a745;color:#fff;text-decoration:none;padding:12px 25px;border-radius:5px;display:inline-block;font-weight:700">Reset Password</a><p>If you didn’t request a password reset, you can safely ignore this email. Your password will not be changed.<p>This link will expire in <strong>30 minutes</strong> for security reasons.<p>Thanks,<br>The Ecobazar Team<tr><td align=center style=background-color:#f0f0f0;padding:20px;font-size:12px;color:#777><p style=margin:0>© 2026 Ecobazar. All rights reserved.<p style="margin:5px 0">If you need help, contact us at <a href=mailto:support@ecobazar.com>support@ecobazar.com</a></table></table>his link into your browser:<p style=word-break:break-all;color:#2ecc71>http://localhost:5173/resetpassword/${token}<p>This link will expire in 24 hours. If you did not create an account, you can safely ignore this email.<p>Thanks,<br>The EcoBazar Team<tr><td style=background:#f4f6f8;padding:20px;text-align:center;font-size:12px;color:#888><p style=margin:0>© 2026 EcoBazar. All rights reserved.<p style="margin:5px 0 0">Dhaka, Bangladesh</table></table></body>`, // HTML body
+    });
+
+  console.log("Message sent: %s", info.messageId);
+  // Preview URL is only available when using an Ethereal test account
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+} catch (err) {
+  console.error("Error while sending mail:", err);
+}
+}
+
+module.exports = {mailVerification,resetPasswordMail}
