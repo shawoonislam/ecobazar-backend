@@ -25,6 +25,7 @@ app.post('/resendverificationemail', resendVerificationEmailController)
 app.post('/verifyemail/:token', verifyEmailController)
 
 // Product Create
+app.post('/createproduct',)
 
 // Order Management
 
