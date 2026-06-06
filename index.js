@@ -6,6 +6,7 @@ const cors = require('cors')
 const dbConfig = require("./config/dbConfig")
 const { registrationController, loginController, forgotPasswordController, resetPasswordController, resendVerificationEmailController, verifyEmailController } = require('./controllers/authenticationController');
 const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController } = require('./controllers/userController');
+const { createProductController, getAllProductsController, getSingleProductController, deleteProductController, updateProductController } = require('./controllers/productController');
 
 
 
@@ -25,7 +26,12 @@ app.post('/resendverificationemail', resendVerificationEmailController)
 app.post('/verifyemail/:token', verifyEmailController)
 
 // Product Create
-app.post('/createproduct',)
+// app.post('/createproduct', )
+app.post('/createproduct', createProductController);
+app.get('/get-all-products', getAllProductsController)
+app.get('/get-single-product/:id', getSingleProductController)
+app.delete('/delete-product/:id', deleteProductController);
+app.put('/update-product/:id', updateProductController);
 
 // Order Management
 
