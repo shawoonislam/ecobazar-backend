@@ -9,6 +9,7 @@ const { registrationController, loginController, forgotPasswordController, reset
 const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController } = require('./controllers/userController');
 const { createProductController, getAllProductsController, getSingleProductController, deleteProductController, updateProductController } = require('./controllers/productController');
 const multer = require('multer');
+const { createCart, increDecre, getCart, proDelete } = require('./controllers/cartController');
 
 // image work
 const storage = multer.diskStorage({
@@ -48,6 +49,14 @@ app.get('/get-single-product/:id', getSingleProductController)
 app.delete('/delete-product/:id', deleteProductController);
 app.put('/update-product/:id', upload.array('images', 5), updateProductController);
 
+
+// Cart Management
+app.post('/cart/create', createCart)
+app.post('/cart/update/:id', increDecre)
+app.get('/cart/:userId', getCart)
+app.delete('/cart/:id',proDelete)
+
+
 // Order Management
 
 // user management
@@ -55,6 +64,8 @@ app.get('/allusers', getAllUsersController)
 app.get('/singleuser/:id', singleUserDataController)
 app.delete('/deleteuser/:id', deleteUserController)
 app.post('/update/:id', updateUserController)
+
+
 
 
 
