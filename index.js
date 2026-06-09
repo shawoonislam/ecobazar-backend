@@ -1,11 +1,27 @@
 require('node:dns').setServers(['1.1.1.1', '8.8.8.8']);
 require('dotenv').config()
 const express = require('express')
+
 const app = express()
 const cors = require('cors')
 const dbConfig = require("./config/dbConfig")
 const { registrationController, loginController, forgotPasswordController, resetPasswordController, resendVerificationEmailController, verifyEmailController } = require('./controllers/authenticationController');
 const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController } = require('./controllers/userController');
+const { createProductController, getAllProductsController, getSingleProductController, deleteProductController, updateProductController } = require('./controllers/productController');
+const multer = require('multer');
+
+// image work
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/products')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, uniqueSuffix + '-' + file.originalname)
+    }
+})
+
+const upload = multer({ storage: storage })
 
 
 
@@ -25,7 +41,12 @@ app.post('/resendverificationemail', resendVerificationEmailController)
 app.post('/verifyemail/:token', verifyEmailController)
 
 // Product Create
-app.post('/createproduct',)
+// app.post('/createproduct', )
+app.post('/createproduct', upload.array('images', 5), createProductController);
+app.get('/get-all-products', getAllProductsController)
+app.get('/get-single-product/:id', getSingleProductController)
+app.delete('/delete-product/:id', deleteProductController);
+app.put('/update-product/:id', upload.array('images', 5), updateProductController);
 
 // Order Management
 
