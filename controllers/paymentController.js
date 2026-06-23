@@ -20,11 +20,9 @@ const paymentController = async (req, res) => {
         })
       
         totalPrice += item.totalPrice
+        
     })
-    // res.send({
-    //     product: pro,
-    //     totalPrice: totalPrice
-    // })
+
 
     const payload = {
       store_id: "aamarpaytest",
@@ -82,4 +80,16 @@ const paymentController = async (req, res) => {
   }
 };
 
-module.exports = {paymentController}
+const getAllOrdersController = async (req,res) => {
+    const {userid} = req.params
+
+    let data = await Order.find({user: userid})
+
+    res.send({
+      success: true,
+      data
+    })
+
+}
+
+module.exports = {paymentController,getAllOrdersController}

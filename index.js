@@ -10,7 +10,7 @@ const { getAllUsersController, singleUserDataController, deleteUserController, u
 const { createProductController, getAllProductsController, getSingleProductController, deleteProductController, updateProductController } = require('./controllers/productController');
 const multer = require('multer');
 const { createCart, increDecre, getCart, proDelete } = require('./controllers/cartController');
-const { paymentController } = require('./controllers/paymentController');
+const { paymentController, getAllOrdersController } = require('./controllers/paymentController');
 
 // image work
 const storage = multer.diskStorage({
@@ -60,6 +60,7 @@ app.delete('/cart/:id',proDelete)
 
 // Order Management
 app.post('/payment',paymentController)
+app.get('/getorders/:userid', getAllOrdersController)
 
 // user management
 app.get('/allusers', getAllUsersController)
