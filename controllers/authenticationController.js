@@ -8,20 +8,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 let registrationController = async (req, res) => {
-  const { email, password, confirmPassword, terms } = req.body;
+  const { email, password, confirmPassword,name } = req.body;
 
   let users = await existingData(res, { email: email });
   if (users) {
     return res.send({
       success: false,
       message: "User exist",
-    });
-  }
-
-  if (!terms) {
-    return res.send({
-      success: false,
-      message: "Please Accept Our Terms and Condition",
     });
   }
 
@@ -39,7 +32,7 @@ let registrationController = async (req, res) => {
   let user = new User({
     email: email,
     password: hash,
-    terms: terms,
+    name: name,
   });
 
   await user.save();
@@ -82,9 +75,18 @@ let loginController = async (req, res) => {
     });
   }
 
+
   res.send({
     success: true,
     message: "Login Successfull",
+    data: {
+      _id: users._id,
+      name: users.name,
+      email: users.email,
+      isVerified: users.isVerified,
+      role: users.role,
+      isHold: users.isHold,
+    }
   });
 };
 

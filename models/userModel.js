@@ -2,10 +2,7 @@ const mongoose = require("mongoose")
 const {Schema} = mongoose
 
 const useSchema = new Schema({
-    firstName: {
-        type: String,
-    },
-    lastName: {
+    name: {
         type: String,
     },
     email: {
@@ -14,13 +11,7 @@ const useSchema = new Schema({
     password: {
         type: String,
     },
-    phoneNumber: {
-        type: String,
-    },
-    terms:{
-        type: Boolean,
-    },
-    profile: {
+    phone: {
         type: String,
     },
     isVerified:{
@@ -36,23 +27,23 @@ const useSchema = new Schema({
         type: Boolean,
         default: false
     },
-    billingAddress:{
-        firstName: {
+    postalCode:{
         type: String,
-        },
-        lastName: {
-            type: String,
+    },
+    address:{
+        type: String,
+    },
+    city:{
+         type: String,
+    },
+    billingAddress:{
+        fullName: {
+        type: String,
         },
         email: {
             type: String,
         },
-        companyName: {
-            type: String,
-        },
         street:{
-            type: String,
-        },
-        state:{
             type: String,
         },
         zipCode:{
@@ -61,9 +52,6 @@ const useSchema = new Schema({
         phoneNumber: {
             type: String,
         },
-        country: {
-            type: String,
-        }
     }
 })
 
