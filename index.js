@@ -6,7 +6,7 @@ const app = express()
 const cors = require('cors')
 const dbConfig = require("./config/dbConfig")
 const { registrationController, loginController, forgotPasswordController, resetPasswordController, resendVerificationEmailController, verifyEmailController } = require('./controllers/authenticationController');
-const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController } = require('./controllers/userController');
+const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController, getAllDeleteUsersController, getSearchData } = require('./controllers/userController');
 const { createProductController, getAllProductsController, getSingleProductController, deleteProductController, updateProductController } = require('./controllers/productController');
 const multer = require('multer');
 const { createCart, increDecre, getCart, proDelete } = require('./controllers/cartController');
@@ -64,6 +64,8 @@ app.get('/getorders/:userid', getAllOrdersController)
 
 // user management
 app.get('/allusers', getAllUsersController)
+app.get('/alldeleteusers', getAllDeleteUsersController)
+app.post('/search', getSearchData)
 app.get('/singleuser/:id', singleUserDataController)
 app.delete('/deleteuser/:id', deleteUserController)
 app.post('/update/:id', updateUserController)

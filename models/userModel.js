@@ -36,6 +36,10 @@ const useSchema = new Schema({
     city:{
          type: String,
     },
+    isDelete:{
+        type: Boolean,
+        default: false,
+    },
     billingAddress:{
         fullName: {
         type: String,
