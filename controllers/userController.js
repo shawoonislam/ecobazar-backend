@@ -20,7 +20,11 @@ let getAllDeleteUsersController = async (req, res) => {
 }
 
 let getSearchData = async (req,res)=>{
-     let userData = await User.find({name: req.body.name})
+     // let userData = await User.find({name: { $regex: req.body.name, $options: 'i' }})
+     let userData = await User.find({$or: [
+               { name: { $regex: req.body.name, $options: 'i' } },
+               { email: { $regex: req.body.name, $options: 'i' } }
+     ]})
      res.send({
           message: "All user Data",
           userData
