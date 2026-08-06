@@ -2,18 +2,70 @@ const {emptyFieldValidation} = require('../utils/validation')
 const Product = require('../models/productModel')
 
 const createProductController = async (req, res) => {
-    const {title,price,category}=req.body
-    emptyFieldValidation(res,title,price,category)
+    const {title,price,category,tag,stock,discountType,discount,discountStartDate,discountEndDate,isMain}=req.body
 
-    // title exists ase naki
+    let images = []
+    req.files.map((item,index)=>{
+        images.push({
+            url: item.path,
+            isMain: isMain == index
+        }
+    )
+    })
+
+    
+
+
 
     let sku = `Eco-${Date.now()}-${new Date().getFullYear()}`
 
-    // sku exists ase naki
+    const startDate = new Date(discountStartDate);
+    const endDate = new Date(discountEndDate);
+    if(new Date().setHours(0, 0, 0, 0) > startDate.setHours(0, 0, 0, 0)){
+        return res.json({
+            success: false,
+            message: "start date current theke choto hobe na",
+        })
+    }
+
+    if(new Date().setHours(0, 0, 0, 0) > endDate.setHours(0, 0, 0, 0)){
+        return res.json({
+            success: false,
+            message: "end date current theke choto hobe na",
+        })
+    }
+
+
+    if(!stock || stock < 1){
+        return res.json({
+            success: false,
+            message: "Stock must be greater then 0",
+        })
+    }
+
+    if(discountType == 'flat'){
+        if(price <= discount && discount < 0){
+            return res.json({
+                success: false,
+                message: "Osomvob",
+            })
+        }
+    }
+
+    if(discountType == 'percentage'){
+        if(discount <= '100'){
+            return res.json({
+                success: false,
+                message: "Osomvob",
+            })
+        }
+    }
 
 
     let product = new Product({
         ...req.body,
+        images: images,
+        tag:tag.split(','),
         sku: sku
     })
 
