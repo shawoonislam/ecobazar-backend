@@ -1,5 +1,6 @@
 const {emptyFieldValidation} = require('../utils/validation')
 const Product = require('../models/productModel')
+let Cat = require('../models/categoryModel')
 
 const createProductController = async (req, res) => {
     const {title,price,category,tag,stock,discountType,discount,discountStartDate,discountEndDate,isMain}=req.body
@@ -156,4 +157,41 @@ const updateProductController = async (req, res) => {
     }
 }
 
-module.exports = {createProductController, getAllProductsController, getSingleProductController, updateProductController, deleteProductController,}
+let createCategory = (req,res)=>{
+    let {name} = req.body
+    if(!name){
+        return res.json({
+            success: false,
+            message: "Name is required",
+        })
+    }
+
+    let category = new Cat({
+        name: name
+    })
+
+    category.save()
+
+    res.json({
+        success: true,
+        message: "Category Created",
+        category: category,
+    })
+
+}
+
+let getCategory = async (req,res)=>{
+    try {
+        let category = await Cat.find({})   
+        res.json({
+            success: true,
+            message: "Categories retrieved",
+            categories: category,
+        })
+    } catch (error) {
+        console.log(error, 'Get Categories related error...');
+        res.status(500).json({ success: false, message: 'Server error...' })
+    }
+}
+
+module.exports = {createProductController, getAllProductsController, getSingleProductController, updateProductController, deleteProductController, createCategory, getCategory}

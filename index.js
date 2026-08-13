@@ -7,10 +7,12 @@ const cors = require('cors')
 const dbConfig = require("./config/dbConfig")
 const { registrationController, loginController, forgotPasswordController, resetPasswordController, resendVerificationEmailController, verifyEmailController } = require('./controllers/authenticationController');
 const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController, getAllDeleteUsersController, getSearchData } = require('./controllers/userController');
-const { createProductController, getAllProductsController, getSingleProductController, deleteProductController, updateProductController } = require('./controllers/productController');
+const { createProductController, getAllProductsController, getSingleProductController, deleteProductController, updateProductController,createCategory,getCategory } = require('./controllers/productController');
 const multer = require('multer');
 const { createCart, increDecre, getCart, proDelete } = require('./controllers/cartController');
 const { paymentController, getAllOrdersController } = require('./controllers/paymentController');
+const path = require('node:path');
+
 
 // image work
 const storage = multer.diskStorage({
@@ -30,6 +32,7 @@ const upload = multer({ storage: storage })
 // Middleware
 app.use(express.json())
 app.use(cors())
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database config
 dbConfig()
@@ -49,6 +52,8 @@ app.get('/get-all-products', getAllProductsController)
 app.get('/get-single-product/:id', getSingleProductController)
 app.delete('/delete-product/:id', deleteProductController);
 app.put('/update-product/:id', upload.array('images', 5), updateProductController);
+app.post('/category', createCategory);
+app.get('/getcategory', getCategory)
 
 
 // Cart Management
@@ -69,6 +74,7 @@ app.post('/search', getSearchData)
 app.get('/singleuser/:id', singleUserDataController)
 app.delete('/deleteuser/:id', deleteUserController)
 app.post('/update/:id', updateUserController)
+
 
 
 
