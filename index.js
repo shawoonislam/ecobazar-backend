@@ -1,90 +1,110 @@
-require('node:dns').setServers(['1.1.1.1', '8.8.8.8']);
-require('dotenv').config()
-const express = require('express')
+require("node:dns").setServers(["1.1.1.1", "8.8.8.8"]);
+require("dotenv").config();
+const express = require("express");
 
-const app = express()
-const cors = require('cors')
-const dbConfig = require("./config/dbConfig")
-const { registrationController, loginController, forgotPasswordController, resetPasswordController, resendVerificationEmailController, verifyEmailController } = require('./controllers/authenticationController');
-const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController, getAllDeleteUsersController, getSearchData } = require('./controllers/userController');
-const { createProductController, getAllProductsController, getSingleProductController, deleteProductController, updateProductController,createCategory,getCategory } = require('./controllers/productController');
-const multer = require('multer');
-const { createCart, increDecre, getCart, proDelete } = require('./controllers/cartController');
-const { paymentController, getAllOrdersController } = require('./controllers/paymentController');
-const path = require('node:path');
-
+const app = express();
+const cors = require("cors");
+const dbConfig = require("./config/dbConfig");
+const {
+  registrationController,
+  loginController,
+  forgotPasswordController,
+  resetPasswordController,
+  resendVerificationEmailController,
+  verifyEmailController,
+} = require("./controllers/authenticationController");
+const {
+  getAllUsersController,
+  singleUserDataController,
+  deleteUserController,
+  updateUserController,
+  getAllDeleteUsersController,
+  getSearchData,
+} = require("./controllers/userController");
+const {
+  createProductController,
+  getAllProductsController,
+  getSingleProductController,
+  deleteProductController,
+  updateProductController,
+  createCategory,
+  getCategory,
+} = require("./controllers/productController");
+const multer = require("multer");
+const {
+  createCart,
+  increDecre,
+  getCart,
+  proDelete,
+} = require("./controllers/cartController");
+const {
+  paymentController,
+  getAllOrdersController,
+} = require("./controllers/paymentController");
+const path = require("node:path");
 
 // image work
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads')
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        cb(null, uniqueSuffix + '-' + file.originalname)
-    }
-})
+  destination: function (req, file, cb) {
+    cb(null, "./uploads");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
 
-const upload = multer({ storage: storage })
-
-
+const upload = multer({ storage: storage });
 
 // Middleware
-app.use(express.json())
-app.use(cors())
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.json());
+app.use(cors());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Database config
-dbConfig()
+dbConfig();
 
-
-app.post('/registration', registrationController)
-app.post('/login',  loginController)
-app.post('/forgotpassword', forgotPasswordController)
-app.post('/resetpassword/:token', resetPasswordController)
-app.post('/resendverificationemail', resendVerificationEmailController)
-app.post('/verifyemail/:token', verifyEmailController)
+app.post("/registration", registrationController);
+app.post("/login", loginController);
+app.post("/forgotpassword", forgotPasswordController);
+app.post("/resetpassword/:token", resetPasswordController);
+app.post("/resendverificationemail", resendVerificationEmailController);
+app.post("/verifyemail/:token", verifyEmailController);
 
 // Product Create
 // app.post('/createproduct', )
-app.post('/createproduct', upload.array('images', 5), createProductController);
-app.get('/get-all-products', getAllProductsController)
-app.get('/get-single-product/:id', getSingleProductController)
-app.delete('/delete-product/:id', deleteProductController);
-app.put('/update-product/:id', upload.array('images', 5), updateProductController);
-app.post('/category', createCategory);
-app.get('/getcategory', getCategory)
-
+app.post("/createproduct", upload.array("images", 5), createProductController);
+app.get("/get-all-products", getAllProductsController);
+app.get("/get-single-product/:id", getSingleProductController);
+app.delete("/delete-product/:id", deleteProductController);
+app.put(
+  "/update-product/:id",
+  upload.array("avatar", 5),
+  updateProductController,
+);
+app.post("/category", createCategory);
+app.get("/getcategory", getCategory);
 
 // Cart Management
-app.post('/cart/create', createCart)
-app.post('/cart/update/:id', increDecre)
-app.get('/cart/:userId', getCart)
-app.delete('/cart/:id',proDelete)
-
+app.post("/cart/create", createCart);
+app.post("/cart/update/:id", increDecre);
+app.get("/cart/:userId", getCart);
+app.delete("/cart/:id", proDelete);
 
 // Order Management
-app.post('/payment',paymentController)
-app.get('/getorders/:userid', getAllOrdersController)
+app.post("/payment", paymentController);
+app.get("/getorders/:userid", getAllOrdersController);
 
 // user management
-app.get('/allusers', getAllUsersController)
-app.get('/alldeleteusers', getAllDeleteUsersController)
-app.post('/search', getSearchData)
-app.get('/singleuser/:id', singleUserDataController)
-app.delete('/deleteuser/:id', deleteUserController)
-app.post('/update/:id', updateUserController)
+app.get("/allusers", getAllUsersController);
+app.get("/alldeleteusers", getAllDeleteUsersController);
+app.post("/search", getSearchData);
+app.get("/singleuser/:id", singleUserDataController);
+app.delete("/deleteuser/:id", deleteUserController);
+app.post("/update/:id", updateUserController);
 
-
-
-
-
-
-
-
-
-let port = process.env.PORT || 5000
+let port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`)
-})
+  console.log(`Server running on port ${port}`);
+});

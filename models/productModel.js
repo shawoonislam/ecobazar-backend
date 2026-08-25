@@ -1,80 +1,81 @@
-const mongoose = require('mongoose')
-const {Schema} = mongoose
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const productSchema = new Schema({
-
+const productSchema = new Schema(
+  {
     title: {
-        type: String,
-        unique: true,
-        // required: true
+      type: String,
+      unique: true,
+      // required: true
     },
-    description:{
-        type: String,
+    description: {
+      type: String,
     },
-    additionalInfo:{
-        type: String,
+    additionalInfo: {
+      type: String,
     },
-    price:{
-        type: Number,
-        // required: true
+    price: {
+      type: Number,
+      // required: true
     },
-    discountType:{
-        type: String,
-        enum: ['percent','flat','none']
+    discountType: {
+      type: String,
+      enum: ["percent", "flat", "none"],
     },
     discount: {
-        type: Number,
-        min: 0,
-        default: 0
+      type: Number,
+      min: 0,
+      default: 0,
     },
-    discountStartDate:{
-        type: Date
+    discountStartDate: {
+      type: Date,
     },
-    discountEndDate:{
-        type: Date
+    discountEndDate: {
+      type: Date,
     },
-    sku:{
-        type: String,
-        // required: true,
-        unique: true,
+    sku: {
+      type: String,
+      // required: true,
+      unique: true,
     },
-    stock:{
-        type: Number,
-        min: 0,
-        default: 0
+    stock: {
+      type: Number,
+      min: 0,
+      default: 0,
     },
     brand: {
-        type: String,
+      type: String,
     },
-    shortDescription:{
-        type: String,
+    shortDescription: {
+      type: String,
     },
-    category:{
-        type: String,
-        // required: true
+    category: {
+      type: String,
+      // required: true
     },
     tag: [
-        {
-            type: String,
-        }
+      {
+        type: String,
+      },
     ],
     status: {
-        type: String,
-        enum: ["pending","active","inactive"],
-        default: "pending"
+      type: String,
+      enum: ["pending", "active", "inactive"],
+      default: "pending",
     },
     images: [
-        {
-            url: {
-                type: String,
-            },
-            isMain:{
-                    type: Boolean,
-                    default: false
-            }
-        }
-    ]
+      {
+        url: {
+          type: String,
+        },
+        isMain: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
+  },
+  { timestamps: true },
+);
 
-},{timestamps: true})
-
-module.exports = mongoose.model('Product',productSchema)
+module.exports = mongoose.model("Product", productSchema);
