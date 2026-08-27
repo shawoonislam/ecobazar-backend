@@ -15,6 +15,8 @@ const createProductController = async (req, res) => {
     discountEndDate,
     isMain,
   } = req.body;
+
+  console.log("asd",isMain)
   
   let images = [];
   req.files?.map((item, index) => {
