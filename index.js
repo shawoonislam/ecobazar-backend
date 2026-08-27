@@ -79,7 +79,7 @@ app.get("/get-single-product/:id", getSingleProductController);
 app.delete("/delete-product/:id", deleteProductController);
 app.put(
   "/update-product/:id",
-  upload.array("avatar", 5),
+  upload.array("images", 5),
   updateProductController,
 );
 app.post("/category", createCategory);

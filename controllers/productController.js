@@ -16,8 +16,8 @@ const createProductController = async (req, res) => {
     isMain,
   } = req.body;
 
-  console.log("asd",isMain)
-  
+  console.log("asd", isMain);
+
   let images = [];
   req.files?.map((item, index) => {
     images.push({
@@ -110,10 +110,20 @@ const getSingleProductController = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Product not found..." });
     }
+
+    let isMain = 0;
+
+    product.images.map((item, index) => {
+      if (item.isMain) {
+        isMain = index;
+      }
+    });
+
     return res.status(200).json({
       success: true,
       message: `Product details: ${product.title}, ${product.sku}`,
       product: product,
+      isMain: isMain,
     });
   } catch (error) {
     console.log(error, "Get single Product related error...");
@@ -145,7 +155,33 @@ const deleteProductController = async (req, res) => {
 const updateProductController = async (req, res) => {
   try {
     const { id } = req.params;
+
     const product = await Product.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+    product.images = [...product.images];
+    req.files?.map((item, index) => {
+      product.images.push({
+        url: item.path,
+        isMain: req.body.isMain == index,
+      });
+    });
+
+    product.images.map((item, index) => {
+      if (item.isMain == true) {
+        item.isMain = false;
+      }
+    });
+
+    product.images[req.body.isMain].isMain = true;
+    console.log(req.body.deleteImage);
+    req.body.deleteImage.split(',').map(item=>{
+
+      product.images.splice(item, 1)
+    })
+
+    const productsingle = await Product.findByIdAndUpdate(id, product, {
       new: true,
     });
 
@@ -157,7 +193,7 @@ const updateProductController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Product updated successfully...",
-      product: product,
+      product: productsingle,
     });
   } catch (error) {
     console.log(error, "Update Product related error...");
