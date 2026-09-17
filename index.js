@@ -29,6 +29,7 @@ const {
   updateProductController,
   createCategory,
   getCategory,
+  bulkCreateProductController,
 } = require("./controllers/productController");
 const multer = require("multer");
 const {
@@ -74,6 +75,11 @@ app.post("/verifyemail/:token", verifyEmailController);
 // Product Create
 // app.post('/createproduct', )
 app.post("/createproduct", upload.array("images", 5), createProductController);
+app.post(
+  "/bulk/createproduct",
+  upload.single("file"),
+  bulkCreateProductController,
+);
 app.get("/get-all-products", getAllProductsController);
 app.get("/get-single-product/:id", getSingleProductController);
 app.delete("/delete-product/:id", deleteProductController);

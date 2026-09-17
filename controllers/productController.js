@@ -1,6 +1,76 @@
 const { emptyFieldValidation } = require("../utils/validation");
 const Product = require("../models/productModel");
 let Cat = require("../models/categoryModel");
+const { readSheet } = require("read-excel-file/node");
+const { unlink } = require("node:fs/promises");
+// const readExcelFile = require("read-excel-file/node");
+
+const schema = {
+  title: {
+    column: "title",
+    type: String,
+  },
+  description: {
+    column: "description",
+    type: String,
+  },
+  additionalInfo: {
+    column: "additionalInfo",
+    type: String,
+  },
+  price: {
+    column: "price",
+    type: Number,
+  },
+  discountType: {
+    column: "discountType",
+    type: String,
+  },
+  discount: {
+    column: "discount",
+    type: Number,
+  },
+  discountStartDate: {
+    column: "discountStartDate",
+    type: Date,
+  },
+  discountEndDate: {
+    column: "discountEndDate",
+    type: Date,
+  },
+  sku: {
+    column: "sku",
+    type: String,
+  },
+  stock: {
+    column: "stock",
+    type: Number,
+  },
+  brand: {
+    column: "brand",
+    type: String,
+  },
+  shortDescription: {
+    column: "shortDescription",
+    type: String,
+  },
+  category: {
+    column: "category",
+    type: String,
+  },
+  tag: {
+    column: "tag",
+    type: String,
+  },
+  status: {
+    column: "status",
+    type: String,
+  },
+  images: {
+    column: "images",
+    type: String,
+  },
+};
 
 const createProductController = async (req, res) => {
   const {
@@ -85,6 +155,73 @@ const createProductController = async (req, res) => {
   });
 };
 
+const bulkCreateProductController = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Excel file is required",
+      });
+    }
+
+    const { objects, errors } = await readSheet(`./${req.file.path}`, {
+      schema,
+    });
+
+    if (errors?.length) {
+      return res.status(400).json({
+        success: false,
+        message: "Excel data validation failed",
+        errors,
+      });
+    }
+    console.log(objects);
+
+    const products = objects.map((item) => ({
+      ...item,
+
+      tag: item.tag ? item.tag.split(",").map((tag) => tag.trim()) : [],
+
+      images: item.images
+        ? item.images.split(",").map((image) => {
+            const [url, isMain] = image.split("|");
+
+            return {
+              url: url.trim(),
+              isMain: isMain?.trim().toLowerCase() === "true",
+            };
+          })
+        : [],
+    }));
+
+    const product = await Product.insertMany(products);
+
+    return res.status(201).json({
+      success: true,
+      message: `${product.length} products created successfully`,
+      data: product,
+    });
+  } catch (error) {
+    console.error("Bulk product create error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create products",
+      error: error.message,
+    });
+  }
+};
+
+// const bulkCreateProductController = async (req, res) => {
+//   console.log(req.file);
+//   // const data = await readSheet(`./${req.file.path}`);
+//   // console.log(data);
+
+//   const { objects, errors } = await readSheet(`./${req.file.path}`, { schema });
+
+//   const products = await Product.insertMany(objects)
+// };
+
 // all product get
 const getAllProductsController = async (req, res) => {
   try {
@@ -151,6 +288,15 @@ const deleteProductController = async (req, res) => {
   }
 };
 
+async function deleteFile(filePath) {
+  try {
+    await unlink(filePath);
+    console.log(`Successfully deleted ${filePath}`);
+  } catch (error) {
+    console.error(`Error deleting file: ${error.message}`);
+  }
+}
+
 // product update
 const updateProductController = async (req, res) => {
   try {
@@ -159,6 +305,20 @@ const updateProductController = async (req, res) => {
     const product = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
+
+    if (req.body?.deleteImage.length > 0) {
+      req.body?.deleteImage?.split(",").map((item) => {
+        deleteFile(product.images[item].url);
+      });
+      let deleteArr = [];
+      product.images.map((item, i) => {
+        if (!req.body?.deleteImage.includes(i)) {
+          deleteArr.push(item);
+        }
+      });
+
+      product.images = deleteArr;
+    }
 
     product.images = [...product.images];
     req.files?.map((item, index) => {
@@ -175,11 +335,7 @@ const updateProductController = async (req, res) => {
     });
 
     product.images[req.body.isMain].isMain = true;
-    console.log(req.body.deleteImage);
-    req.body.deleteImage.split(',').map(item=>{
-
-      product.images.splice(item, 1)
-    })
+    // console.log("asda",req.body.deleteImage);
 
     const productsingle = await Product.findByIdAndUpdate(id, product, {
       new: true,
@@ -193,7 +349,7 @@ const updateProductController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Product updated successfully...",
-      product: productsingle,
+      // product: productsingle,
     });
   } catch (error) {
     console.log(error, "Update Product related error...");
@@ -245,4 +401,5 @@ module.exports = {
   deleteProductController,
   createCategory,
   getCategory,
+  bulkCreateProductController,
 };

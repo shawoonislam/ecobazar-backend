@@ -5,8 +5,8 @@ const productSchema = new Schema(
   {
     title: {
       type: String,
-      unique: true,
-      // required: true
+      // unique: true,
+      required: true
     },
     description: {
       type: String,
@@ -16,7 +16,7 @@ const productSchema = new Schema(
     },
     price: {
       type: Number,
-      // required: true
+      required: true
     },
     discountType: {
       type: String,
@@ -35,8 +35,8 @@ const productSchema = new Schema(
     },
     sku: {
       type: String,
-      // required: true,
-      unique: true,
+      required: true,
+      // unique: true,
     },
     stock: {
       type: Number,
@@ -51,7 +51,7 @@ const productSchema = new Schema(
     },
     category: {
       type: String,
-      // required: true
+      required: true
     },
     tag: [
       {
