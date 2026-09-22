@@ -63,6 +63,15 @@ const productSchema = new Schema(
       enum: ["pending", "active", "inactive"],
       default: "pending",
     },
+    slug:{
+       type: String,
+       required: true
+    },
+    section:{
+       type: String,
+      enum: ["none","deals", "feature", "new"],
+      default: "none",
+    },
     images: [
       {
         url: {

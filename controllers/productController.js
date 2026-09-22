@@ -97,6 +97,7 @@ const createProductController = async (req, res) => {
   });
 
   let sku = `Eco-${Date.now()}-${new Date().getFullYear()}`;
+  let slug = title.toLowerCase().toString().trim().split(" ").join('-')
 
   const startDate = new Date(discountStartDate);
   const endDate = new Date(discountEndDate);
@@ -144,6 +145,7 @@ const createProductController = async (req, res) => {
     images: images,
     tag: tag.split(","),
     sku: sku,
+    slug: slug
   });
 
   await product.save();
@@ -302,11 +304,36 @@ const updateProductController = async (req, res) => {
   try {
     const { id } = req.params;
 
+
+
     const product = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
 
-    if (req.body?.deleteImage.length > 0) {
+   
+
+    product.images = [...product.images];
+    req.files?.map((item, index) => {
+      product.images.push({
+        url: item.path,
+        isMain: req.body.isMain == index,
+      });
+    });
+
+    product.images.map((item, index) => {
+      if(item.isMain){
+        if (item.isMain == true) {
+        item.isMain = false;
+      }
+      }
+    });
+
+    if(req.body.isMain){
+
+      product.images[req.body.isMain].isMain = true;
+    }
+    // console.log("asda",req.body.deleteImage);
+     if (req.body?.deleteImage.length > 0) {
       req.body?.deleteImage?.split(",").map((item) => {
         deleteFile(product.images[item].url);
       });
@@ -319,23 +346,11 @@ const updateProductController = async (req, res) => {
 
       product.images = deleteArr;
     }
+    if(product.images.length == 1){
 
-    product.images = [...product.images];
-    req.files?.map((item, index) => {
-      product.images.push({
-        url: item.path,
-        isMain: req.body.isMain == index,
-      });
-    });
+      product.images[0].isMain = true;
+    }
 
-    product.images.map((item, index) => {
-      if (item.isMain == true) {
-        item.isMain = false;
-      }
-    });
-
-    product.images[req.body.isMain].isMain = true;
-    // console.log("asda",req.body.deleteImage);
 
     const productsingle = await Product.findByIdAndUpdate(id, product, {
       new: true,
