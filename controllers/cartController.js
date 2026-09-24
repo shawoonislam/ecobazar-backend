@@ -25,7 +25,7 @@ const createCart = async (req,res) => {
         let cart = new Cart({
                 product: proid,
                 quantity: 1,
-                totalPrice: existingProduct.price,
+                // totalPrice: existingProduct.price,
                 user: userid
             })
 
@@ -84,17 +84,28 @@ const getCart = async (req,res)=>{
     const {userId} = req.params
     console.log(userId)
 
-    const cart = await Cart.find({user: userId}).populate('user product')
+    const cart = await Cart.find({user: userId}).populate('user product').lean()
 
-    let totalPrice =  0
+    let totalCartPrice =  0
 
     cart.map(item=>{
-        totalPrice += item.totalPrice
+        totalCartPrice += item.product.price * item.quantity
+    })
+
+    let cartItem = []
+
+    cart.map(item=>{
+        let cart = {
+            ...item,
+            totalPrice: item.price * item.quantity
+        }
+
+        cartItem.push(cart)
     })
 
     res.json({
-        cart,
-        totalPrice
+        cart: cartItem,
+        totalCartPrice
     })
 
 

@@ -13,10 +13,6 @@ const cartSchema = new Schema({
         min: 1,
         required: true
     },
-    totalPrice:{
-        type: Number,
-        required: true
-    },
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

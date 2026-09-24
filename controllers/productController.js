@@ -226,8 +226,11 @@ const bulkCreateProductController = async (req, res) => {
 
 // all product get
 const getAllProductsController = async (req, res) => {
+
   try {
-    const product = await Product.find({});
+    let params = req.query.section
+
+    const product = await Product.find(params?{section: params}: {});
     return res.status(200).json({
       success: true,
       message: "All products...",
