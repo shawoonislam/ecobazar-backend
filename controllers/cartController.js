@@ -46,13 +46,22 @@ const increDecre = async (req,res)=>{
     const {id} = req.params
     const {type} = req.body
 
-    const cart = await Cart.findOne({product: id})
-    const product = await Product.findOne({_id: id})
-    console.log(product)
+    const cart = await Cart.findOne({_id: id}).populate('product')
+ 
+    const product = await Product.findOne({_id: cart.product})
+    
 
     if(type === "plus"){
         cart.quantity += 1
+        
+        if(cart.quantity > cart.product.stock){
+            return res.json({
+                success: false,
+                message: "Out of Stock"
+            })
+        }
         cart.totalPrice = cart.totalPrice + product.price
+
         await cart.save()
     }else{
         cart.quantity -=  1
