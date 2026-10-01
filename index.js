@@ -81,7 +81,7 @@ app.post(
   bulkCreateProductController,
 );
 app.get("/get-all-products", getAllProductsController);
-app.get("/get-single-product/:id", getSingleProductController);
+app.get("/get-single-product/:slug", getSingleProductController);
 app.delete("/delete-product/:id", deleteProductController);
 app.put(
   "/update-product/:id",

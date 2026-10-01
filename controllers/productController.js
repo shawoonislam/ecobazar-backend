@@ -245,8 +245,8 @@ const getAllProductsController = async (req, res) => {
 // single product get
 const getSingleProductController = async (req, res) => {
   try {
-    const { id } = req.params;
-    const product = await Product.findById(id);
+    const { slug } = req.params;
+    const product = await Product.findOne({slug:slug});
     if (!product) {
       return res
         .status(404)
